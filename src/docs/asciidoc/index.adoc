@@ -1,0 +1,99 @@
+= : What's new in Gradle Enterprise
+:revnumber: {project-version}
+:example-caption!:
+ifndef::imagesdir[:imagesdir: images]
+ifndef::sourcedir[:sourcedir: ../java]
+:navigation:
+:menu:
+:status:
+:title-slide-background-image: title.jpeg
+:title-slide-transition: zoom
+:title-slide-transition-speed: fast
+:icons: font
+
+== Gradle Enterprise 2014
+
+Released 20th June 2017.
+
+https://gradle.com/enterprise/releases/2017.4
+
+== What is Gradle Enterprise?
+
+== Build cache
+
+Do more by building less.
+
+== Build scans
+
+Know thy build.
+
+== You want to distinguish CI build scans from developer build scans
+
+== You want source control information in your build scans
+
+== You want to surface static code analysis issues in build scans
+
+== Your build is failing with diagnostic output you don't understand
+
+== Your configuration time is slower than it should be
+
+== Your project fails to compile after updating your checkout
+
+== Your project doesn't compile on your colleagues machine
+
+== You want to make the build faster
+
+== You want to make another build faster
+
+== You’ve just started with build cache
+
+== Your FROM-CACHE task is still a little slow
+
+== You're getting an unexpected build cache miss
+
+== Your build is slower for your colleague
+
+== Some things we didn’t show
+
+* Dependencies exploration and search
+* Test failure pages
+* Memory usage and garbage collection
+* Searching with the scan list
+* Leveraging your data with the Export API
+* Exploring the plugins of your build
+* Communicating build failures
+
+== What's coming?
+
+== Build scans
+
+* More cross build analysis
+* More resource usage insight
+* Finer grained performance insight
+* Developer oriented feedback
+* …
+
+== Build cache
+
+* Cache federation / distribution
+* Sophisticated cache topologies
+* Transparent load balancing and fault tolerance
+* Cache fetch cost/benefit analysis
+* …
+
+== Getting started
+
+* Use scans.gradle.com
+* Install a cache node
+* Start a trial
+
+== Gradle Enterprise 2014
+
+Released 20th June 2017.
+
+https://gradle.com/enterprise/releases/2017.4
+
+[%notitle]
+== Thanks
+
+image::outro.jpeg[background, size=cover]
