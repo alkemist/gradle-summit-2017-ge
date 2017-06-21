@@ -1,9 +1,9 @@
 buildCache {
     local {
-        enabled = false
+//        enabled = false
     }
-    remote(HttpBuildCache) {
-        url =  "https://build-cache-node1-demo.gradle.com/cache/"
-        push = true
-    }
+//    remote(HttpBuildCache) {
+//        url =  "https://build-cache-node1-demo.gradle.com/cache/"
+//        push = true
+//    }
 }
