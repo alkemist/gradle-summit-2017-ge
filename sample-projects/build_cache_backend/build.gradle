@@ -1,0 +1,24 @@
+apply plugin: "base"
+
+5.times {
+    tasks.build.dependsOn(tasks.create("t$it", WriteNameTask, {
+        file = file("$project.buildDir/$name")
+        nameInput = name
+    }))
+}
+
+@CacheableTask
+class WriteNameTask extends DefaultTask {
+
+    @OutputFile
+    File file
+
+    @Input
+    String nameInput
+
+    @TaskAction
+    void action() {
+        sleep 2000
+        file.text = nameInput
+    }
+}

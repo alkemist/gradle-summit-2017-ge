@@ -1,0 +1,11 @@
+gradle.startParameter.buildCacheEnabled = true
+
+buildCache {
+    local {
+        enabled = false
+    }
+    remote(HttpBuildCache) {
+        url =  "https://enterprise-demo.gradle.com/cache/"
+        push = true
+    }
+}
