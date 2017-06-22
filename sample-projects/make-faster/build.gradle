@@ -1,0 +1,15 @@
+def build = tasks.create("build")
+
+def random = new Random()
+subprojects {
+    20.times { i ->
+        def task = tasks.create("t$i").doLast { sleep random.nextInt(1000) }
+        build.dependsOn task
+        task.shouldRunAfter ":p5:t13"
+    }
+
+
+}
+
+project(":p5").tasks.t13.doLast { sleep 20000 }
+

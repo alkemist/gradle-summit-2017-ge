@@ -1,0 +1,5 @@
+rootProject.name = "make-it-faster"
+
+6.times {
+    include "p$it"
+}

@@ -1,0 +1,34 @@
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+subprojects {
+    apply plugin: "java"
+
+    compileJava {
+        outputs.upToDateWhen { false }
+    }
+}
+
+apply from: "gradle/myScriptPlugin.gradle"
+
+
+[2,6].each {
+    project("child$it") {
+        dependencies {
+            testCompile "junit:junit:latest.release"
+        }
+    }
+}
+
+configurations {
+    custom
+}
+
+dependencies {
+    custom "junit:junit:latest.release"
+}
+
+configurations.custom.files
