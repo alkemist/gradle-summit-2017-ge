@@ -159,11 +159,11 @@ https://github.com/gradle/gradle-enterprise-export-api-samples
 == Some things we didn’t show
 
 * Dependencies exploration and search
-* Test failure pages
-* Memory usage and garbage collection
-* Searching with the scan list
 * Exploring the plugins of your build
+* Investigating test failures
+* Memory usage and garbage collection
 * Dependency download network activity
+* Searching with the scan list
 * …
 
 == What's coming?
