@@ -134,13 +134,24 @@ https://enterprise-demo.gradle.com/s/v6sl5i657bvnc/performance/execution[scan]
 
 TODO
 
+== Export your data in real time
+
+++++
+  <iframe src="https://player.vimeo.com/video/202944447" width="660" height="372" frameborder="0"
+                            title="Gradle Enterprise - Export API" webkitallowfullscreen=""
+                            mozallowfullscreen=""
+                            allowfullscreen="">
+  </iframe>
+++++
+
+https://github.com/gradle/gradle-enterprise-export-api-samples
+
 == Some things we didn’t show
 
 * Dependencies exploration and search
 * Test failure pages
 * Memory usage and garbage collection
 * Searching with the scan list
-* Leveraging your data with the Export API
 * Exploring the plugins of your build
 * Dependency download network activity
 * …
