@@ -1,0 +1,16 @@
+task build {}
+
+def commitId = 'git rev-parse --verify HEAD'.execute().text.trim()
+def status = 'git status --porcelain'.execute().text
+buildScan {
+    value "Git Commit ID", commitId
+    link "Source", "https://github.com/company/project/tree/" + commitId
+
+    if (status) {
+        value "Git Status", status
+        tag "dirty"
+    }
+}
+
+
+
