@@ -1,0 +1,43 @@
+subprojects {
+    group "org.example"
+    apply plugin: "java"
+    apply plugin: "maven"
+
+    repositories {
+        maven { url "file://$rootProject.buildDir/repo/" }
+    }
+}
+
+project(":consumer") {
+    dependencies {
+        compile "org.example:dependency:2.0"
+    }
+
+    buildScan.value "Git Commit ID", "bbbb"
+}
+
+project(":dependency") {
+    version "2.0"
+    dependencies {
+        compile "org.example:transitive:2.0"
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: "file://$rootProject.buildDir/repo/")
+            }
+        }
+    }
+}
+
+project(":transitive") {
+    version "2.0"
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: "file://$rootProject.buildDir/repo/")
+            }
+        }
+    }
+}

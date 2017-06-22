@@ -1,0 +1,11 @@
+task build {}
+
+buildScan {
+    if (System.getenv().containsKey("CI")) {
+        tag "CI"
+    } else {
+        tag "local"
+    }
+}
+
+

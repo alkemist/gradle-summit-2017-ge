@@ -27,23 +27,92 @@ Do more by building less.
 
 Know thy build.
 
-== You want to distinguish CI build scans from developer build scans
+== Your build is emitting console output you don't understand
 
-== You want source control information in your build scans
-
-== You want to surface static code analysis issues in build scans
-
-== Your build is failing with diagnostic output you don't understand
+https://enterprise-demo.gradle.com/s/7ur7oyf4wocc2/log#L240[scan]
 
 == Your configuration time is slower than it should be
 
+https://enterprise-demo.gradle.com/s/ibm4hgyg4nwny/performance[scan]
+
+== You want to distinguish CI build scans from developer build scans
+
+== Build scan DSL
+
+[source,groovy]
+----
+buildScan {
+    if (System.getenv().containsKey("CI")) {
+        tag "CI"
+    } else {
+        tag "local"
+    }
+}
+----
+
+https://enterprise-demo.gradle.com/s/hlkg74kqxtbrm[CI scan]
+
+https://enterprise-demo.gradle.com/s/nltdlvme6s726[local scan]
+
+== You want source control information in your build scans
+
+== Build scan DSL
+
+[source,groovy]
+----
+def commitId = 'git rev-parse --verify HEAD'.execute().text.trim()
+def status = 'git status --porcelain'.execute().text
+buildScan {
+    value "Git Commit ID", commitId
+    link "Source", "https://github.com/company/project/tree/" + commitId
+
+    if (status) {
+        value "Git Status", status
+        tag "dirty"
+    }
+}
+----
+
+https://enterprise-demo.gradle.com/s/jil4lobzpmk2c[scan]
+
+== You want to surface static code analysis issues in build scans
+
+== Build scan DSL
+
+[source,groovy]
+----
+gradle.taskGraph.afterTask { Task task, TaskState state ->
+    if (task instanceof Checkstyle && state.failure) {
+        def checkstyle = new XmlSlurper().parse(task.reports.xml.destination)
+        def errors = checkstyle.file.collect {
+            String filePath = task.project.rootProject.relativePath(it.@name.text())
+            it.error.collect { "${filePath}:${it.@line}:${it.@column} \u2192 ${it.@message}" }
+        }.flatten()
+
+        errors.each {
+          buildScan.value 'Checkstyle Issue', it
+        }
+    }
+}
+----
+
+https://enterprise-demo.gradle.com/s/ht6teybom6hpo#custom-values[scan]
+
 == Your project fails to compile after updating your checkout
+
+https://enterprise-demo.gradle.com/s/u4jphw7fqinka/log#L3[scan]
 
 == Your project doesn't compile on your colleagues machine
 
 == You want to make the build faster
 
+https://enterprise-demo.gradle.com/s/36hkd5jqjnn2e[before]
+
+https://enterprise-demo.gradle.com/s/dur7sgajrhjbu[after]
+
 == You want to make another build faster
+
+https://enterprise-demo.gradle.com/s/nnaix4qsxvwim[scan]
 
 == You’ve just started with build cache
 

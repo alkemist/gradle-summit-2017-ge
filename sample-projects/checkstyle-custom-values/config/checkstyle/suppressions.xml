@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suppressions PUBLIC
+  "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+  "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+
+<suppressions>
+  <!-- do not run checkstyle on the generated jOOQ source files -->
+  <suppress checks="." files=".+[\\/]jooq[\\/]"/>
+
+  <!-- do not run checkstyle on the generated Rocker source files -->
+  <suppress checks="." files="com[\\/]gradle[\\/]scan[\\/]server[\\/]app[\\/]ui[\\/]template[\\/]"/>
+  <suppress checks="." files="com[\\/]gradle[\\/]buildcache[\\/]controller[\\/]ui[\\/]template[\\/]"/>
+  <suppress checks="." files="com[\\/]gradle[\\/]buildcache[\\/]node[\\/]ui[\\/]template[\\/]"/>
+  <suppress checks="." files="com[\\/]gradle[\\/]site[\\/]template"/>
+</suppressions>

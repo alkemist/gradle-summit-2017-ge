@@ -1,0 +1,5 @@
+rootProject.name = "custom-values-and-links"
+
+include "consumer"
+include "dependency"
+include "transitive"
