@@ -19,21 +19,21 @@ https://gradle.com/enterprise/releases/2017.4
 
 == What is Gradle Enterprise?
 
-== Build cache
-
-Do more by building less.
-
 == Build scans
 
 Know thy build.
 
+== Build cache
+
+Do more by building less.
+
 == Your build is emitting console output you don't understand
 
-https://enterprise-demo.gradle.com/s/7ur7oyf4wocc2/log#L240[scan]
+https://enterprise-demo.gradle.com/s/7ur7oyf4wocc2/log#L241[scan]
 
-== Your configuration time is slower than it should be
+== Your project doesn't compile on your colleagues machine
 
-https://enterprise-demo.gradle.com/s/ibm4hgyg4nwny/performance[scan]
+TODO
 
 == You want to distinguish CI build scans from developer build scans
 
@@ -50,9 +50,9 @@ buildScan {
 }
 ----
 
-https://enterprise-demo.gradle.com/s/hlkg74kqxtbrm[CI scan]
+https://enterprise-demo.gradle.com/s/nltdlvme6s726[CI scan]
 
-https://enterprise-demo.gradle.com/s/nltdlvme6s726[local scan]
+https://enterprise-demo.gradle.com/s/hlkg74kqxtbrm[local scan]
 
 == You want source control information in your build scans
 
@@ -73,7 +73,7 @@ buildScan {
 }
 ----
 
-https://enterprise-demo.gradle.com/s/jil4lobzpmk2c[scan]
+TODO
 
 == You want to surface static code analysis issues in build scans
 
@@ -96,15 +96,15 @@ gradle.taskGraph.afterTask { Task task, TaskState state ->
 }
 ----
 
-https://enterprise-demo.gradle.com/s/ht6teybom6hpo#custom-values[scan]
+https://enterprise-demo.gradle.com/s/h7y52mfzdoq4o/custom-values[scan]
 
 == Your project fails to compile after updating your checkout
 
 https://enterprise-demo.gradle.com/s/u4jphw7fqinka/log#L3[scan]
 
-== Your project doesn't compile on your colleagues machine
+== Your configuration time is slower than it should be
 
-TODO
+https://enterprise-demo.gradle.com/s/ibm4hgyg4nwny/performance[scan]
 
 == You want to make the build faster
 
@@ -118,9 +118,13 @@ https://enterprise-demo.gradle.com/s/nnaix4qsxvwim[scan]
 
 == You want to know why a task wasn't up-to-date
 
-https://enterprise-demo.gradle.com/s/wzdgdzocd4cno[scan]
+https://enterprise-demo.gradle.com/s/wzdgdzocd4cno[scan 1]
 
-https://enterprise-demo.gradle.com/s/6dga4fmnosp5e/timeline?task=3scflzwkg4yxw[scan]
+https://enterprise-demo.gradle.com/s/6dga4fmnosp5e/timeline?task=3scflzwkg4yxw[scan 2]
+
+== You've just started with build cache
+
+https://enterprise-demo.gradle.com/s/v6sl5i657bvnc/performance/buildCache[scan]
 
 == How much build caching do I get?
 
