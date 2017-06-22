@@ -11,7 +11,7 @@ ifndef::sourcedir[:sourcedir: ../java]
 :title-slide-transition-speed: fast
 :icons: font
 
-== Gradle Enterprise 2014
+== Gradle Enterprise 2017.4
 
 Released 20th June 2017.
 
@@ -33,7 +33,11 @@ https://enterprise-demo.gradle.com/s/7ur7oyf4wocc2/log#L241[scan]
 
 == Your project doesn't compile on your colleagues machine
 
-TODO
+https://enterprise-demo.gradle.com/s/m74xopatzcpxw[successful build]
+
+https://enterprise-demo.gradle.com/s/s6pppa7h2ibw4/log#L229[failed build]
+
+https://enterprise-demo.gradle.com/c/m74xopatzcpxw/s6pppa7h2ibw4/infrastructure[comparison]
 
 == You want to distinguish CI build scans from developer build scans
 
@@ -54,6 +58,8 @@ https://enterprise-demo.gradle.com/s/nltdlvme6s726[CI scan]
 
 https://enterprise-demo.gradle.com/s/hlkg74kqxtbrm[local scan]
 
+https://enterprise-demo.gradle.com/scans?offset=0&size=50&sortColumn=startTime&sortOrder=desc&tags=CI[scan list]
+
 == You want source control information in your build scans
 
 == Build scan DSL
@@ -73,7 +79,7 @@ buildScan {
 }
 ----
 
-TODO
+https://enterprise-demo.gradle.com/s/eyjmwjyeohqjs#custom-values[scan]
 
 == You want to surface static code analysis issues in build scans
 
@@ -132,7 +138,11 @@ https://enterprise-demo.gradle.com/s/v6sl5i657bvnc/performance/execution[scan]
 
 == You're getting an unexpected build cache miss
 
-TODO
+https://enterprise-demo.gradle.com/s/c42acf2kqem32/timeline?task=pfigh4fcxkfts[producer]
+
+https://enterprise-demo.gradle.com/s/fqrwj4adn5aju/timeline?task=pfigh4fcxkfts[consumer]
+
+https://enterprise-demo.gradle.com/c/c42acf2kqem32/b3fy4s3miukek/task-inputs[comparison]
 
 == Export your data in real time
 
@@ -149,11 +159,11 @@ https://github.com/gradle/gradle-enterprise-export-api-samples
 == Some things we didn’t show
 
 * Dependencies exploration and search
-* Test failure pages
-* Memory usage and garbage collection
-* Searching with the scan list
 * Exploring the plugins of your build
+* Investigating test failures
+* Memory usage and garbage collection
 * Dependency download network activity
+* Searching with the scan list
 * …
 
 == What's coming?
@@ -180,13 +190,14 @@ https://github.com/gradle/gradle-enterprise-export-api-samples
 * Install a cache node
 * Start a trial
 
-== Gradle Enterprise 2014
+== Gradle Enterprise 2017.4
 
 Released 20th June 2017.
 
 https://gradle.com/enterprise/releases/2017.4
 
 [%notitle]
+
 == Thanks
 
 image::outro.jpeg[background, size=cover]
