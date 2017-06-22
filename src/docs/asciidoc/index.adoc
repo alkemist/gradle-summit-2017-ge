@@ -104,6 +104,8 @@ https://enterprise-demo.gradle.com/s/u4jphw7fqinka/log#L3[scan]
 
 == Your project doesn't compile on your colleagues machine
 
+TODO
+
 == You want to make the build faster
 
 https://enterprise-demo.gradle.com/s/36hkd5jqjnn2e[before]
@@ -114,13 +116,19 @@ https://enterprise-demo.gradle.com/s/dur7sgajrhjbu[after]
 
 https://enterprise-demo.gradle.com/s/nnaix4qsxvwim[scan]
 
-== You’ve just started with build cache
+== You want to know why a task wasn't up-to-date
 
-== Your FROM-CACHE task is still a little slow
+https://enterprise-demo.gradle.com/s/wzdgdzocd4cno[scan]
+
+https://enterprise-demo.gradle.com/s/6dga4fmnosp5e/timeline?task=3scflzwkg4yxw[scan]
+
+== How much build caching do I get?
+
+https://enterprise-demo.gradle.com/s/v6sl5i657bvnc/performance/execution[scan]
 
 == You're getting an unexpected build cache miss
 
-== Your build is slower for your colleague
+TODO
 
 == Some things we didn’t show
 
@@ -130,7 +138,8 @@ https://enterprise-demo.gradle.com/s/nnaix4qsxvwim[scan]
 * Searching with the scan list
 * Leveraging your data with the Export API
 * Exploring the plugins of your build
-* Communicating build failures
+* Dependency download network activity
+* …
 
 == What's coming?
 
