@@ -1,0 +1,72 @@
+/*
+ * Copyright 2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+apply plugin: "com.gradle.build-scan"
+def env = System.getenv()
+
+
+buildScan {
+  def commitId = env.REVISION
+  try {
+    commitId = 'git rev-parse --verify HEAD'.execute().text.trim()
+  } catch (ignore) {
+    // ignore
+  }
+
+  if (commitId) {
+    link "Source", "https://github.com/ratpack/ratpack/tree/" + commitId
+  }
+}
+
+if (true) {
+
+  buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
+
+    publishAlways()
+    tag "CI"
+
+    if (isSemaphore) {
+      link "Semaphore CI", "https://semaphoreci.com/ratpack/ratpack/branches/${env.BRANCH_NAME.replace('.', '-')}/builds/${env.SEMAPHORE_BUILD_NUMBER}"
+    }
+
+    // Capture individual issues for some reports
+    gradle.taskGraph.afterTask { Task task, TaskState state ->
+      if (task instanceof Checkstyle) {
+        if (state.failure && task.reports.xml.destination.exists()) {
+          def checkstyle = new XmlSlurper().parse(task.reports.xml.destination)
+          def errors = checkstyle.file.collect {
+            String filePath = task.project.rootProject.relativePath(it.@name.text())
+            it.error.collect { "${filePath}:${it.@line}:${it.@column} \u2192 ${it.@message}" }
+          }.flatten()
+          errors.each { task.project.buildScan.value 'Checkstyle Issue', it }
+        }
+      }
+      if (task instanceof CodeNarc && task.reports.xml.destination.exists()) {
+        if (state.failure) {
+          def codenarc = new XmlSlurper().parse(task.reports.xml.destination)
+          def errors = codenarc.Package.collect {
+            it.File.collect {
+              String filePath = task.project.rootProject.relativePath(it.@name.text())
+              it.Violation.collect { "${filePath}:${it.@lineNumber} \u2192 ${it.Message.text()}" }
+            }.flatten()
+          }.flatten()
+          errors.each { task.project.buildScan.value 'CodeNarc Issue', it }
+        }
+      }
+    }
+  }
+}

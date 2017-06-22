@@ -1,0 +1,237 @@
+/*
+ * Copyright 2013 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.locks.ReentrantLock
+
+buildscript {
+  repositories {
+    jcenter()
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+    maven {
+            url "https://repo.gradle.org/gradle/gradlecom-libs-snapshots-local"
+    }
+  }
+
+  dependencies {
+    classpath "org.jfrog.buildinfo:build-info-extractor-gradle:2.2.3"
+
+    // Artifactory plugin pulls in very old Guava, which conflicts with child projects.
+    // Force to newer version here.
+    classpath 'com.google.guava:guava:18.0'
+
+    classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
+    classpath "com.github.ben-manes:gradle-versions-plugin:0.8"
+    classpath "com.gradle:build-scan-plugin:latest.integration"
+  }
+}
+
+allprojects {
+  version = "1.5.0-SNAPSHOT"
+}
+
+ext {
+  isSnapshot = version.endsWith("SNAPSHOT")
+  isTravis = System.getenv("TRAVIS") != null
+  isDrone = System.getenv("DRONE") != null
+  isCodeship = System.getenv("CI_NAME") == "codeship"
+  isSnapCi = System.getenv("SNAP_CI") != null
+  isAppveyor = System.getenv("APPVEYOR") != null
+  isHeroku = System.getenv("HEROKU") != null
+  isSemaphore = System.getenv("SEMAPHORE") != null
+  isCloudCi = isTravis || isDrone || isCodeship || isSnapCi || isAppveyor || isSemaphore
+  isCi = isCloudCi
+
+  publishedModules = [
+    "ratpack-core", "ratpack-groovy", "ratpack-guice", "ratpack-session", "ratpack-session-redis", "ratpack-test", "ratpack-groovy-test",
+    "ratpack-manual", "ratpack-gradle", "ratpack-handlebars", "ratpack-remote", "ratpack-remote-test",
+    "ratpack-dropwizard-metrics", "ratpack-h2", "ratpack-thymeleaf", "ratpack-rx", "ratpack-hikari", "ratpack-newrelic",
+    "ratpack-pac4j", "ratpack-hystrix", "ratpack-spring-boot", "ratpack-spring-boot-starter", "ratpack-retrofit2",
+    "ratpack-jdbc-tx", "ratpack-consul", "ratpack-base", "ratpack-exec", "ratpack-rocker"
+  ].collect { project(it) }
+
+  noCodeModules = [
+    "ratpack-spring-boot-starter"
+  ]
+
+  apiModules = publishedModules.findAll { !(it.name in ["ratpack-manual", "ratpack-gradle", "ratpack-spring-boot-starter"]) }
+}
+
+apply from: 'gradle/buildScan.gradle'
+
+def jvmEncoding = java.nio.charset.Charset.defaultCharset().name()
+if (jvmEncoding != "UTF-8") {
+  throw new IllegalStateException("Build environment must be UTF-8 (it is: $jvmEncoding) - add '-Dfile.encoding=UTF-8' to the GRADLE_OPTS environment variable ")
+}
+
+if (!JavaVersion.current().java8Compatible) {
+  throw new IllegalStateException("Must be built with Java 8 or higher")
+}
+
+
+apply plugin: "artifactory"
+apply plugin: "com.github.kt3k.coveralls"
+apply plugin: "com.github.ben-manes.versions"
+
+artifactory {
+  contextUrl = 'http://oss.jfrog.org'
+}
+
+artifactoryPublish { task ->
+  gradle.taskGraph.whenReady { taskGraph ->
+    def startParameter = project.gradle.startParameter
+    if (taskGraph.hasTask(task) && startParameter.parallelProjectExecutionEnabled && startParameter.maxWorkerCount > 1) {
+      throw new IllegalStateException("cannot run " + task + " with --parallel and --max-workers > 1")
+    }
+  }
+  skip true
+}
+
+task bintrayPublish() {
+  doLast {
+    if (!project.hasProperty("ratpackOssJfrogApiKey")) {
+      throw new InvalidUserDataException("You must provide ratpackOssJfrogApiKey")
+    }
+
+    if (!project.hasProperty('buildNumber')) {
+      throw new GradleException("Must provide buildNumber of a release binary from oss.jfrog.org")
+    }
+
+    def curl = ['curl',
+                '-X', 'POST',
+                "-H", "X-JFrog-Art-Api: ${ratpackOssJfrogApiKey}",
+                "-H", "Content-Type: application/json",
+                "-d", """{
+    "subject": "ratpack",
+    "repoName": "maven",
+    "packageName": "ratpack",
+    "versionName": "${project.version}",
+    "licenses": ["Apache-2.0"],
+    "vcs_url": "https://github.com/ratpack/ratpack"
+}
+""",
+                "https://oss.jfrog.org/api/build/pushToBintray/ratpack/$project.buildNumber"
+    ].execute()
+    logger.info("Received response: ${curl.text}")
+  }
+}
+
+allprojects {
+  group = "io.ratpack"
+
+  apply plugin: "base"
+  apply plugin: "idea"
+  apply plugin: "eclipse"
+  apply from: "$rootDir/gradle/dependencyRules.gradle"
+
+  repositories {
+    jcenter()
+    maven { url 'http://oss.jfrog.org/artifactory/repo' }
+  }
+
+}
+
+apply from: "gradle/idea/idea.gradle"
+
+apply from: "gradle/dependencies.gradle"
+
+subprojects {
+  apply from: "$rootDir/gradle/ratpackLocal.gradle"
+  if (project in publishedModules) {
+    apply from: "$rootDir/gradle/publish.gradle"
+  }
+}
+
+evaluationDependsOnChildren()
+
+apply plugin: "jacoco"
+task jacocoReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+  def projects = subprojects.findAll { it.plugins.hasPlugin(JacocoPlugin) && it.file("src/test").exists() }
+
+  dependsOn projects*.test
+
+  sourceDirectories = files(projects*.sourceSets*.main*.allSource)
+  classDirectories = files(projects*.sourceSets*.main*.output)
+  executionData = files(projects*.jacocoTestReport*.executionData)
+
+  reports {
+    html.enabled = true
+    xml.enabled = true
+    csv.enabled = false
+  }
+}
+
+// Maven POM generation is not thread safe, so serialize all the Upload tasks we can use `--parallel`.
+def lock = new ReentrantLock()
+def available = lock.newCondition()
+def busy = new AtomicBoolean()
+allprojects {
+  tasks.withType(Upload) { uploadTask ->
+    doFirst {
+      lock.lock()
+      while (busy.get()) {
+        available.await()
+      }
+      busy.set(true)
+    }
+  }
+}
+gradle.taskGraph.afterTask {
+  if (it instanceof Upload && lock.heldByCurrentThread) {
+    busy.set(false)
+    available.signal()
+    lock.unlock()
+  }
+}
+
+task downloadDependencies() {
+  doLast {
+    allprojects { p ->
+      configurations.each { c ->
+        if (c.canBeResolved) {
+          println "Downloading dependencies for $p.path - $c.name"
+          c.files
+        }
+      }
+    }
+  }
+}
+
+task sanityCheck { t ->
+  allprojects {
+    dependsOn it.tasks.withType(CodeNarc)
+    dependsOn it.tasks.withType(Checkstyle)
+  }
+}
+
+task calculatePrime {
+  doFirst() {
+    println '41 is not a prime number'
+  }
+}
+
+tasks.getByPath(':ratpack-manual:stylizeManual').dependsOn calculatePrime
+
+gradle.addListener(new org.gradle.api.execution.TaskExecutionListener() {
+        public void beforeExecute(final Task task) {
+        }        
+        public void afterExecute(final Task task, final TaskState taskState) {
+           if(taskState.failure!=null && task instanceof org.gradle.api.tasks.testing.Test) {
+             buildScan.tag "TEST-FAILURE"
+           }
+        }
+})
