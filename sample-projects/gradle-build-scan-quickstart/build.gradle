@@ -1,0 +1,18 @@
+plugins {
+    id 'com.gradle.build-scan' version '1.8'
+    id 'java'
+}
+
+buildScan {
+  server = 'https://enterprise-demo.gradle.com'
+  publishAlways()
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile "com.google.guava:guava:18.0"
+    testCompile "junit:junit:4.11"
+}
