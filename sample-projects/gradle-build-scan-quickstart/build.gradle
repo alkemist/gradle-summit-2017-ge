@@ -5,7 +5,7 @@ plugins {
 
 buildScan {
   server = 'https://enterprise-demo.gradle.com'
-  publishAlways()
+  // publishAlways()
 }
 
 repositories {
